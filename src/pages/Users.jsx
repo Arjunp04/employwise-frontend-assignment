@@ -23,7 +23,7 @@ const Users = () => {
           className={`px-3 py-1.5 rounded-md cursor-pointer text-sm ${
             page === i
               ? "bg-black text-white "
-              : " text-black bg-gray-200 hover:bg-gray-300 border-gray-300 border"
+              : " text-black bg-gray-100 hover:bg-gray-200 border-gray-400 border"
           }`}
         >
           {i}
@@ -34,7 +34,7 @@ const Users = () => {
   };
 
   return (
-    <div className="min-h-screen text-white px-6 py-10 max-w-7xl mx-auto">
+    <div className="text-white px-6 py-10 max-w-7xl mx-auto">
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {users.map((user) => (
           <UserCard key={user.id} user={user} />

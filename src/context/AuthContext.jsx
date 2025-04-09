@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { fetchUserById, fetchUsers } from "../services/apiFunctions";
 
 const AuthContext = createContext();
 
@@ -22,15 +23,18 @@ export const AuthProvider = ({ children }) => {
 
   const fetchAllUsers = async (pageNum) => {
     try {
-      const response = await axios.get(
-        `https://reqres.in/api/users?page=${pageNum}`
-      );
-      setUsers(response.data.data);
-      setTotalPages(response.data.total_pages);
-    } catch (err) {
-      toast.error("Failed to fetch users");
+      const response = await fetchUsers(pageNum);
+      setUsers(response.data);
+      setTotalPages(response.total_pages);
+    } catch (error) {
+      toast.error("Failed to fetch users", {
+        position: "top-center",
+        autoClose: 1000,
+      });
     }
-  };
+    };
+    
+   
 
   useEffect(() => {
     fetchAllUsers(page);

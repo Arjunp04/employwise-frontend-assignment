@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import { useAuth } from "./context/AuthContext";
 import ProtectedRoute from "./utils/ProtectedRoute";
+import EditUser from "./pages/EditUser";
 
 const App = () => {
   const location = useLocation();
@@ -26,6 +27,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <Users />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="user/edit/:id"
+          element={
+            <ProtectedRoute>
+              <EditUser />
             </ProtectedRoute>
           }
         />

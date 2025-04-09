@@ -23,14 +23,14 @@ const UserCard = ({ user }) => {
       <p className="text-gray-300 text-sm mb-4">{user.email}</p>
       <div className="flex justify-center gap-4">
         <button
-          onClick={() => navigate(`/edit/${user.id}`)}
-          className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-500"
+          onClick={() => navigate(`/user/edit/${user.id}`)}
+          className="px-4 py-2 rounded bg-green-500 hover:bg-green-500/80 cursor-pointer"
         >
           Edit
         </button>
         <button
           onClick={handleDelete}
-          className="px-4 py-2 rounded bg-red-600 hover:bg-red-500"
+          className="px-4 py-2 rounded bg-red-600 hover:bg-red-600/80 cursor-pointer"
         >
           Delete
         </button>
