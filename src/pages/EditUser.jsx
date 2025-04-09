@@ -7,9 +7,10 @@ import { useAuth } from "../context/AuthContext";
 const EditUser = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { users, setUsers, page } = useAuth();
+  const { setUsers, page } = useAuth();
 
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const getUserData = async () => {
@@ -17,7 +18,10 @@ const EditUser = () => {
         const data = await fetchUserById(id);
         setUser(data);
       } catch (error) {
-        toast.error("Failed to fetch user", { autoClose: 1500 });
+        toast.error("Failed to fetch user", {
+          position: "top-center",
+          autoClose: 1000,
+        });
       }
     };
 
@@ -50,6 +54,7 @@ const EditUser = () => {
     if (!validateForm()) return;
 
     try {
+      setLoading(true);
       const { first_name, last_name, email, id: userId, avatar } = user;
 
       const response = await updateUserById(id, {
@@ -63,7 +68,10 @@ const EditUser = () => {
         id: userId,
         avatar,
       };
-      toast.success("User updated", { autoClose: 1200 });
+      toast.success("User updated", {
+        position: "top-center",
+        autoClose: 1000,
+      });
 
       setUsers((prevUsers) => {
         const updatedList = prevUsers.map((u) =>
@@ -89,7 +97,12 @@ const EditUser = () => {
 
       navigate("/users");
     } catch (error) {
-      toast.error("Update failed", { autoClose: 1200 });
+      toast.error("Update failed", {
+        position: "top-center",
+        autoClose: 1000,
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -159,7 +172,7 @@ const EditUser = () => {
                 type="submit"
                 className="bg-blue-700 hover:bg-blue-800 text-white px-6 py-2 rounded-md transition duration-300 cursor-pointer"
               >
-                Update
+                {loading ? "Updating..." : "Update"}
               </button>
               <button
                 type="button"

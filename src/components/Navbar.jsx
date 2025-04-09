@@ -11,7 +11,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    localStorage.clear(); // Optional: clear all local storage
+    localStorage.clear(); 
     toast.success("Logged out successfully", {
       position: "top-center",
       autoClose: 1000,

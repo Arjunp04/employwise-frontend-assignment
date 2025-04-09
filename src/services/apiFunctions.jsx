@@ -25,13 +25,17 @@ export const fetchUsers = async (pageNum = 1) => {
 //get user by id api
 export const fetchUserById = async (userId) => {
   const response = await api.get(`/api/users/${userId}`);
-  console.log("single user data : ",response);
   return response.data.data;
 };
 
 // Update user by ID api
 export const updateUserById = async (userId, editForm) => {
-    const response = await api.put(`/api/users/${userId}`, editForm);
-    console.log("update api response : ",response);
+  const response = await api.put(`/api/users/${userId}`, editForm);
+  return response.data;
+};
+
+//delete user by id api
+export const deleteUserById = async (id) => {
+  const response = await api.delete(`/api/users/${id}`);
   return response.data;
 };

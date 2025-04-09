@@ -55,6 +55,31 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const deleteUserFromStorage = (userId) => {
+    setUsers((prevUsers) => {
+      const updatedUsers = prevUsers.filter((user) => user.id !== userId);
+
+      // Update localStorage for the current page
+      const localKey = `users-page-${page}`;
+      const localData = localStorage.getItem(localKey);
+
+      if (localData) {
+        const parsed = JSON.parse(localData);
+        const filteredUsers = parsed.data.filter((user) => user.id !== userId);
+
+        localStorage.setItem(
+          localKey,
+          JSON.stringify({
+            data: filteredUsers,
+            total_pages: parsed.total_pages,
+          })
+        );
+      }
+
+      return updatedUsers;
+    });
+  };
+
   useEffect(() => {
     fetchAllUsers(page);
   }, [page]);
@@ -72,6 +97,7 @@ export const AuthProvider = ({ children }) => {
         setPage,
         totalPages,
         setTotalPages,
+        deleteUserFromStorage,
       }}
     >
       {children}
