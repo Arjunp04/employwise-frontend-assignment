@@ -18,23 +18,42 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setToken(null);
-    localStorage.removeItem("token");
+    localStorage.clear();
   };
 
   const fetchAllUsers = async (pageNum) => {
+    const localKey = `users-page-${pageNum}`;
+
+    // Check if users for this page are in localStorage
+    const localData = localStorage.getItem(localKey);
+    if (localData) {
+      const parsed = JSON.parse(localData);
+      setUsers(parsed.data);
+      setTotalPages(parsed.total_pages);
+      return;
+    }
+
+    // If not, fetch from API and save in localStorage
     try {
       const response = await fetchUsers(pageNum);
       setUsers(response.data);
       setTotalPages(response.total_pages);
+
+      // Save to localStorage
+      localStorage.setItem(
+        localKey,
+        JSON.stringify({
+          data: response.data,
+          total_pages: response.total_pages,
+        })
+      );
     } catch (error) {
       toast.error("Failed to fetch users", {
         position: "top-center",
         autoClose: 1000,
       });
     }
-    };
-    
-   
+  };
 
   useEffect(() => {
     fetchAllUsers(page);

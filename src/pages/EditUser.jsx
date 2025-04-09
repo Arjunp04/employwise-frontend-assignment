@@ -2,28 +2,20 @@ import React, { useEffect, useState } from "react";
 import { fetchUserById, updateUserById } from "../services/apiFunctions";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
+import { useAuth } from "../context/AuthContext";
 
 const EditUser = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { users, setUsers, page } = useAuth();
 
   const [user, setUser] = useState(null);
-  const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
-  });
 
   useEffect(() => {
     const getUserData = async () => {
       try {
         const data = await fetchUserById(id);
         setUser(data);
-        setFormData({
-          first_name: data.first_name || "",
-          last_name: data.last_name || "",
-          email: data.email || "",
-        });
       } catch (error) {
         toast.error("Failed to fetch user", { autoClose: 1500 });
       }
@@ -33,12 +25,15 @@ const EditUser = () => {
   }, [id]);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setUser((prevUser) => ({
+      ...prevUser,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const validateForm = () => {
-    const { first_name, last_name, email } = formData;
-    if (!first_name.trim() || !last_name.trim() || !email.trim()) {
+    const { first_name, last_name, email } = user;
+    if (!first_name?.trim() || !last_name?.trim() || !email?.trim()) {
       toast.error("All fields are required", { autoClose: 1200 });
       return false;
     }
@@ -55,14 +50,44 @@ const EditUser = () => {
     if (!validateForm()) return;
 
     try {
-        const updatedUser = await updateUserById(id, formData);
-        console.log(updatedUser);
-      toast.success("User updated", { autoClose: 1200 });
-      setFormData({
-        first_name: updatedUser.first_name,
-        last_name: updatedUser.last_name,
-        email: updatedUser.email,
+      const { first_name, last_name, email, id: userId, avatar } = user;
+
+      const response = await updateUserById(id, {
+        first_name,
+        last_name,
+        email,
       });
+
+      const updatedUser = {
+        ...response,
+        id: userId,
+        avatar,
+      };
+      toast.success("User updated", { autoClose: 1200 });
+
+      setUsers((prevUsers) => {
+        const updatedList = prevUsers.map((u) =>
+          u.id === userId ? updatedUser : u
+        );
+
+        // Also update localStorage for current page
+        const localKey = `users-page-${page}`;
+        const storedPageData = localStorage.getItem(localKey);
+        if (storedPageData) {
+          const parsed = JSON.parse(storedPageData);
+          const newPageData = parsed.data.map((u) =>
+            u.id === userId ? updatedUser : u
+          );
+          localStorage.setItem(
+            localKey,
+            JSON.stringify({ ...parsed, data: newPageData })
+          );
+        }
+
+        return updatedList;
+      });
+
+      navigate("/users");
     } catch (error) {
       toast.error("Update failed", { autoClose: 1200 });
     }
@@ -77,7 +102,7 @@ const EditUser = () => {
       {!user ? (
         <div className="text-center text-white text-xl">Loading...</div>
       ) : (
-        <div className="w-full max-w-xl p-8   bg-gradient-to-br from-gray-800 via-black to-gray-800  text-white rounded-xl shadow-lg mt-16">
+        <div className="w-full max-w-xl p-8 bg-gradient-to-br from-gray-800 via-black to-gray-800 text-white rounded-xl shadow-lg mt-16">
           <h2 className="text-3xl font-bold text-center mb-6">Edit User</h2>
 
           <div className="flex flex-col items-center mb-6">
@@ -96,7 +121,7 @@ const EditUser = () => {
               <input
                 type="text"
                 name="first_name"
-                value={formData.first_name}
+                value={user.first_name || ""}
                 onChange={handleChange}
                 className="w-full px-4 py-2 bg-gray-800 border border-gray-500 rounded-md focus:outline-none focus:ring focus:ring-gray-200"
                 placeholder="Enter first name"
@@ -110,7 +135,7 @@ const EditUser = () => {
               <input
                 type="text"
                 name="last_name"
-                value={formData.last_name}
+                value={user.last_name || ""}
                 onChange={handleChange}
                 className="w-full px-4 py-2 bg-gray-800 border border-gray-500 rounded-md focus:outline-none focus:ring focus:ring-gray-200"
                 placeholder="Enter last name"
@@ -122,7 +147,7 @@ const EditUser = () => {
               <input
                 type="email"
                 name="email"
-                value={formData.email}
+                value={user.email || ""}
                 onChange={handleChange}
                 className="w-full px-4 py-2 bg-gray-800 border border-gray-500 rounded-md focus:outline-none focus:ring focus:ring-gray-200"
                 placeholder="Enter email"
