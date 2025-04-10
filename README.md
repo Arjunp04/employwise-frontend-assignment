@@ -36,8 +36,9 @@ This assignment was completed in three levels of increasing complexity:
 
 
 ## 🌟 Features  
-✅ **Token-based Login & Session Management** 
-✅ **Protected Routes functionality added** 
+
+✅ **Token-based Login & Session Management**  
+✅ **Protected Routes functionality added**  
 ✅ **Auto Logout After 1 Hour of Inactivity**  
 ✅ **Paginated User Listing**  
 ✅ **Edit User Details with Form Validation**  
@@ -45,6 +46,7 @@ This assignment was completed in three levels of increasing complexity:
 ✅ **Client-side Search & Filtering**  
 ✅ **Fully Responsive Design (Mobile + Desktop)**  
 ✅ **Modular Folder Structure with Reusable Components**  
+ 
 
 
 ## 📌 Assumptions & Considerations  
