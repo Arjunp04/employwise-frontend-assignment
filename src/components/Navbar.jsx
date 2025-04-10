@@ -11,7 +11,6 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    localStorage.clear(); 
     toast.success("Logged out successfully", {
       position: "top-center",
       autoClose: 1000,
@@ -20,14 +19,15 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-gradient-to-r from-gray-900 via-black to-gray-800 text-white px-6 py-5 flex justify-between items-center shadow-md">
+    <nav className="bg-gradient-to-r from-gray-900 via-black to-gray-800 text-white px-4 sm:px-6 py-5 flex justify-between items-center shadow-md">
       {/* Left: Logo and brand */}
       <div className="flex items-center space-x-2 font-bold text-xl">
-        <span className="text-white">🚀 UserApp</span>
+        {/* 🚀 */}
+        <span className="text-white"> UserApp</span>
       </div>
 
       {/* Center: Navigation Links */}
-      <div className="space-x-6 font-medium text-lg">
+      <div className="space-x-3 sm:space-x-6 font-medium text-lg">
         <Link to="/" className="hover:text-purple-400 transition">
           Home
         </Link>
@@ -40,7 +40,7 @@ const Navbar = () => {
       <div className="flex items-center space-x-4">
         {token ? (
           <>
-            <FaUserCircle size={28} title="Profile" />
+            <FaUserCircle size={28} title="Profile" className="" />
             <button
               onClick={handleLogout}
               className="flex items-center text-red-500 hover:text-red-400 transition cursor-pointer"

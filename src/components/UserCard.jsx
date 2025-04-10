@@ -1,29 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import { toast } from "react-toastify";
-import { deleteUserById } from "../services/apiFunctions";
-import { useAuth } from "../context/AuthContext";
-import ConfirmDeleteModal from "./confirmDeleteModal";
+import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import { useDeleteUser } from "../hooks/useDeleteUser";
 
 const UserCard = ({ user }) => {
   const navigate = useNavigate();
-  const { deleteUserFromStorage } = useAuth();
+  const { deleteUser } = useDeleteUser();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleConfirmDelete = async () => {
     try {
-      await deleteUserById(user.id);
-      deleteUserFromStorage(user.id);
-      toast.success(`${user.first_name} has been deleted`, {
-        position: "top-center",
-        autoClose: 1000,
-      });
-    } catch (error) {
-      toast.error("Failed to delete user", {
-        position: "top-center",
-        autoClose: 1000,
-      });
+      await deleteUser(user.id, user.first_name);
     } finally {
       setIsModalOpen(false);
     }

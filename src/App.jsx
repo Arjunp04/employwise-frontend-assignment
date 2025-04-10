@@ -1,7 +1,7 @@
 import React, { Suspense, lazy } from "react";
 import { Route, Routes, useLocation } from "react-router";
 import { useAuth } from "./context/AuthContext";
-import ProtectedRoute from "./utils/ProtectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Lazy loaded components
 const Login = lazy(() => import("./pages/Login"));
@@ -19,32 +19,20 @@ const App = () => {
 
   return (
     <>
-      <Suspense fallback={<div className="text-white p-4">Loading...</div>}>
+      <Suspense
+        fallback={
+          <div className="text-black flex justify-center mt-72">Loading...</div>
+        }
+      >
         {showNavbar && <Navbar />}
         <Routes>
-          <Route
-            index
-            element={
-              <Suspense fallback={<div>Loading Home...</div>}>
-                <Home />
-              </Suspense>
-            }
-          />
-          <Route
-            path="login"
-            element={
-              <Suspense fallback={<div>Loading Login...</div>}>
-                <Login />
-              </Suspense>
-            }
-          />
+          <Route index element={<Home />} />
+          <Route path="login" element={<Login />} />
           <Route
             path="users"
             element={
               <ProtectedRoute>
-                <Suspense fallback={<div>Loading Users...</div>}>
-                  <Users />
-                </Suspense>
+                <Users />
               </ProtectedRoute>
             }
           />
@@ -52,9 +40,7 @@ const App = () => {
             path="user/edit/:id"
             element={
               <ProtectedRoute>
-                <Suspense fallback={<div>Loading Edit Page...</div>}>
-                  <EditUser />
-                </Suspense>
+                <EditUser />
               </ProtectedRoute>
             }
           />
