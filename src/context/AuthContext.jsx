@@ -1,7 +1,6 @@
-import axios from "axios";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { fetchUserById, fetchUsers } from "../services/apiFunctions";
+import { fetchUsers } from "../services/apiFunctions";
 
 const AuthContext = createContext();
 
@@ -10,6 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const login = (newToken) => {
     setToken(newToken);
@@ -98,6 +98,8 @@ export const AuthProvider = ({ children }) => {
         totalPages,
         setTotalPages,
         deleteUserFromStorage,
+        searchQuery,
+        setSearchQuery,
       }}
     >
       {children}

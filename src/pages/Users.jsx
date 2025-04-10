@@ -2,10 +2,17 @@ import React from "react";
 import { useAuth } from "../context/AuthContext";
 import UserCard from "../components/UserCard";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-
+import Searchbar from "../components/Searchbar";
 
 const Users = () => {
-  const { users, page, setPage, totalPages } = useAuth();
+  const { users, page, setPage, totalPages, searchQuery } = useAuth();
+  
+  const filteredUsers = users.filter(
+    (user) =>
+      user.first_name.toLowerCase().includes(searchQuery) ||
+      user.last_name.toLowerCase().includes(searchQuery) ||
+      user.email.toLowerCase().includes(searchQuery)
+  );
 
   const handlePageClick = (pageNumber) => {
     if (page !== pageNumber) {
@@ -34,15 +41,20 @@ const Users = () => {
   };
 
   return (
-    <div className="text-white px-6 py-10 max-w-7xl mx-auto">
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {users.map((user) => (
-          <UserCard key={user.id} user={user} />
-        ))}
+    <div className=" text-white px-6 pt-5 max-w-7xl mx-auto">
+      <Searchbar />
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-5">
+        {filteredUsers.length > 0 ? (
+          filteredUsers.map((user) => <UserCard key={user.id} user={user} />)
+        ) : (
+          <p className="text-center col-span-full text-gray-400 my-28">
+            No users found.
+          </p>
+        )}
       </div>
 
       {/* Pagination */}
-      <div className="mt-10 flex justify-center items-center gap-4">
+      <div className=" mt-8 flex justify-center items-center gap-4">
         <button
           disabled={page === 1}
           onClick={() => setPage(page - 1)}
