@@ -1,107 +1,77 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
-import { fetchUsers } from "../services/apiFunctions";
+import { getValidToken } from "../utils/validateToken.js";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(() => localStorage.getItem("token"));
-  const [users, setUsers] = useState([]);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+  const [token, setToken] = useState(() => getValidToken());
+  const [sessionExpired, setSessionExpired] = useState(false);
 
   const login = (newToken) => {
+    const expiry = new Date().getTime() + 60 * 60 * 1000; // 1 hour
+    const authData = { token: newToken, expiry };
+    localStorage.setItem("authData", JSON.stringify(authData));
+    localStorage.setItem("wasLoggedIn", "true");
     setToken(newToken);
-    localStorage.setItem("token", newToken);
+    setSessionExpired(false);
   };
 
   const logout = () => {
     setToken(null);
+    const wasLoggedIn = localStorage.getItem("wasLoggedIn");
+
     localStorage.clear();
-  };
+    sessionStorage.clear();
 
-  const fetchAllUsers = async (pageNum) => {
-    const localKey = `users-page-${pageNum}`;
-
-    // Check if users for this page are in localStorage
-    const localData = localStorage.getItem(localKey);
-    if (localData) {
-      const parsed = JSON.parse(localData);
-      setUsers(parsed.data);
-      setTotalPages(parsed.total_pages);
-      return;
-    }
-
-    // If not, fetch from API and save in localStorage
-    try {
-      const response = await fetchUsers(pageNum);
-      setUsers(response.data);
-      setTotalPages(response.total_pages);
-
-      // Save to localStorage
-      localStorage.setItem(
-        localKey,
-        JSON.stringify({
-          data: response.data,
-          total_pages: response.total_pages,
-        })
-      );
-    } catch (error) {
-      toast.error("Failed to fetch users", {
-        position: "top-center",
-        autoClose: 1000,
-      });
+    // Restore return-flag
+    if (wasLoggedIn) {
+      localStorage.setItem("wasLoggedIn", "true");
     }
   };
 
-  const deleteUserFromStorage = (userId) => {
-    setUsers((prevUsers) => {
-      const updatedUsers = prevUsers.filter((user) => user.id !== userId);
+  // ✅ Function to check token immediately and on interval
+  const checkSession = () => {
+    const saved = JSON.parse(localStorage.getItem("authData"));
+    const isExpired = !saved || Date.now() > saved.expiry;
+    const wasLoggedIn = localStorage.getItem("wasLoggedIn");
 
-      // Update localStorage for the current page
-      const localKey = `users-page-${page}`;
-      const localData = localStorage.getItem(localKey);
-
-      if (localData) {
-        const parsed = JSON.parse(localData);
-        const filteredUsers = parsed.data.filter((user) => user.id !== userId);
-
-        localStorage.setItem(
-          localKey,
-          JSON.stringify({
-            data: filteredUsers,
-            total_pages: parsed.total_pages,
-          })
-        );
+    if (isExpired && !sessionExpired) {
+      logout();
+      setSessionExpired(true); // prevent multiple toasts
+      // Notify only returning users
+      if (wasLoggedIn) {
+        toast.info("Session expired. Please login again.", {
+          position: "top-center",
+          autoClose: 1000,
+        });
       }
-
-      return updatedUsers;
-    });
+      navigate("/login");
+    }
   };
 
   useEffect(() => {
-    fetchAllUsers(page);
-  }, [page]);
+    
+    // ✅ One-time delayed check after 3 seconds
+    const timeout = setTimeout(() => {
+      checkSession();
+    }, 2000);
+
+    // ✅ Regular interval every 5 minutes (300,000ms)
+    const interval = setInterval(() => {
+      checkSession();
+    }, 300000);
+
+    return () => {
+      clearTimeout(timeout);
+      clearInterval(interval);
+    };
+  }, [navigate, sessionExpired]);
 
   return (
-    <AuthContext.Provider
-      value={{
-        token,
-        login,
-        logout,
-        users,
-        setUsers,
-        fetchAllUsers,
-        page,
-        setPage,
-        totalPages,
-        setTotalPages,
-        deleteUserFromStorage,
-        searchQuery,
-        setSearchQuery,
-      }}
-    >
+    <AuthContext.Provider value={{ token, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
