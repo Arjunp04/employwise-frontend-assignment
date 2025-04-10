@@ -42,7 +42,7 @@ const EditUserForm = ({ user, loading, onChange, onSubmit, onCancel }) => {
       <div className="flex justify-between pt-4">
         <button
           type="submit"
-          className="bg-blue-700 hover:bg-blue-800 text-white px-6 py-2 rounded-md cursor-pointer disabled:opacity-50"
+          className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-md cursor-pointer disabled:opacity-50"
           disabled={loading}
         >
           {loading ? "Updating..." : "Update"}
@@ -50,7 +50,7 @@ const EditUserForm = ({ user, loading, onChange, onSubmit, onCancel }) => {
         <button
           type="button"
           onClick={onCancel}
-          className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-md cursor-pointer"
+          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md cursor-pointer"
         >
           Cancel
         </button>

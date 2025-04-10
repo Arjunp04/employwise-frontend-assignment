@@ -16,7 +16,7 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-tl  from-gray-800 via-black to-gray-800 text-white flex flex-col items-center justify-center px-4 py-6">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white flex flex-col items-center justify-center px-4 py-6">
       <div className="flex flex-col justify-center items-center mt-4 mb-8 sm:mb-10">
         <h2 className="text-3xl sm:text-4xl font-bold mb-4 tracking-tight text-white drop-shadow-lg text-center">
           User Management App

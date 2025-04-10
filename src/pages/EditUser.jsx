@@ -42,26 +42,25 @@ const EditUser = () => {
       {!user ? (
         <div className="text-center text-white text-xl">Loading...</div>
       ) : (
-       
-          <div className="w-full max-w-xl p-8 bg-gradient-to-br from-gray-800 via-black to-gray-800 text-white rounded-xl shadow-lg my-10">
-            <h2 className="text-3xl font-bold text-center mb-6">Edit User</h2>
+        <div className="w-full max-w-xl p-8 bg-gradient-to-br from-black via-gray-900 to-black text-white rounded-xl shadow-lg my-10">
+          <h2 className="text-3xl font-bold text-center mb-6">Edit User</h2>
 
-            <div className="flex flex-col items-center mb-6">
-              <img
-                src={user.avatar}
-                alt="User Avatar"
-                className="w-28 h-28 rounded-full border-4 border-green-500 shadow-md"
-              />
-            </div>
-
-            <EditUserForm
-              user={user}
-              loading={loading}
-              onChange={handleChange}
-              onSubmit={handleSubmit}
-              onCancel={handleCancel}
+          <div className="flex flex-col items-center mb-6">
+            <img
+              src={user.avatar}
+              alt="User Avatar"
+              className="w-28 h-28 rounded-full border-4 border-green-500 shadow-md"
             />
           </div>
+
+          <EditUserForm
+            user={user}
+            loading={loading}
+            onChange={handleChange}
+            onSubmit={handleSubmit}
+            onCancel={handleCancel}
+          />
+        </div>
       )}
     </div>
   );

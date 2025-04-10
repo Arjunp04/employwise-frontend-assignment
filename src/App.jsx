@@ -1,7 +1,8 @@
 import React, { Suspense, lazy } from "react";
-import { Route, Routes, useLocation } from "react-router";
+import { Navigate, Route, Routes, useLocation } from "react-router";
 import { useAuth } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import NotFound from "./pages/NotFound";
 
 // Lazy loaded components
 const Login = lazy(() => import("./pages/Login"));
@@ -15,7 +16,7 @@ const App = () => {
   const { token } = useAuth();
 
   const showNavbar =
-    token && location.pathname !== "/" && location.pathname !== "/login";
+    token && location.pathname !== "/" && location.pathname !== "/login" && location.pathname !== "/404";
 
   return (
     <>
@@ -44,6 +45,8 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          <Route path="*" element={<Navigate to="/404" />} />
+          <Route path="/404" element={<NotFound />} />
         </Routes>
       </Suspense>
     </>
