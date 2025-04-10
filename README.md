@@ -51,7 +51,7 @@ This assignment was completed in three levels of increasing complexity:
 
 ## 📌 Assumptions & Considerations  
 - Token is stored in localStorage and expires after 1 hour  
-- localStorage is optionally used to persist user state  
+- sessionStorage is optionally used to persist user state  
 - App state updates immediately after edit or delete api actions with help of sessionStorage
 
 
